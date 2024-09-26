@@ -10,7 +10,6 @@
 #include "includes.h"
 
 #include "common/cli.h"
-#include "common/wpa_ctrl.h"
 #include "utils/common.h"
 #include "utils/eloop.h"
 #include "utils/edit.h"
@@ -213,6 +212,11 @@ int hostapd_ctrl_command(struct wpa_ctrl *ctrl, const char *cmd)
 	return _wpa_ctrl_command(ctrl, cmd, 0, NULL);
 }
 
+int hostapd_ctrl_command_interactive(struct wpa_ctrl *ctrl, const char *cmd)
+{
+	return _wpa_ctrl_command(ctrl, cmd, 1, NULL);
+}
+
 int zephyr_hostapd_cli_cmd_resp(const char *cmd, char *resp)
 {
 	return _wpa_ctrl_command(hapd_ctrl_conn, cmd, 1, resp);
@@ -263,7 +267,7 @@ static void hostapd_cli_recv_pending(struct wpa_ctrl *ctrl, struct hostapd_data 
 
 			msg->msg[msg->msg_len] = '\0';
 			wpa_printf(MSG_DEBUG, "Received len: %d, msg_len:%d - %s->END\n",
-				   len, msg->msg_len, msg->msg);
+				   plen, msg->msg_len, msg->msg);
 			if (msg->msg_len >= MAX_CTRL_MSG_LEN) {
 				wpa_printf(MSG_INFO, "Too long message received.\n");
 				continue;
